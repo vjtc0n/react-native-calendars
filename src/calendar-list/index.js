@@ -9,7 +9,7 @@ import dateutils from '../dateutils';
 import Calendar from '../calendar';
 import CalendarListItem from './item';
 
-const calendarHeight = 360;
+const calendarHeight = 375;
 class CalendarList extends Component {
   static propTypes = {
     ...Calendar.propTypes,
@@ -60,10 +60,10 @@ class CalendarList extends Component {
       rows,
       texts,
       openDate: date,
-      initialized: false
+      initialized: false,
+      isMoving: false
     };
     this.lastScrollPosition = -1000;
-
     this.onViewableItemsChangedBound = this.onViewableItemsChanged.bind(this);
     this.renderCalendarBound = this.renderCalendar.bind(this);
   }
@@ -197,7 +197,7 @@ class CalendarList extends Component {
         data={this.state.rows}
         //snapToAlignment='start'
         //snapToInterval={calendarHeight}
-        removeClippedSubviews={Platform.OS === 'android' ? false : true}
+        removeClippedSubviews={Platform.OS === 'android' ? false : false}
         pageSize={1}
         onViewableItemsChanged={this.onViewableItemsChangedBound}
         renderItem={this.renderCalendarBound}
@@ -216,6 +216,14 @@ class CalendarList extends Component {
           this.state.openDate ? this.getMonthIndex(this.state.openDate) : false
         }
         getItemLayout={this.getItemLayout}
+        onMomentumScrollBegin={() => {
+          this.setState({ isMoving: true });
+        }}
+        onMomentumScrollEnd={() => {
+          this.setState({ isMoving: true });
+        }}
+        shouldRasterizeIOS={this.state.isMoving}
+        renderToHardwareTextureAndroid={this.state.isMoving}
       />
     );
   }
